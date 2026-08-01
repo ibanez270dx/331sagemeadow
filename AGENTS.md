@@ -39,3 +39,34 @@ Token is hardcoded directly in the Mixpanel `init` call inside `<head>` in `view
 
 ### Value Moment
 `showing_requested` — a visitor clicking to schedule a private showing is the clearest signal of purchase intent.
+
+## Analytics: Facebook Pixel
+
+This project uses the **Meta/Facebook Pixel** for ad campaign tracking and optimization. Loaded client-side in `views/index.erb`, alongside the Mixpanel snippet.
+
+### Pixel ID
+`1702015774439575`
+
+ID is hardcoded directly in the `fbq('init', ...)` call and in the `<noscript>` fallback image `src`, inside `<head>` in `views/index.erb`. No environment variable split is configured (single project, no dev/prod split yet).
+
+### Platform
+- Client-side JavaScript (browser), loaded via the Facebook Pixel base code snippet, with a `<noscript>` `<img>` fallback right after `<body>`
+- No server-side Conversions API
+
+### Consent
+- No consent gate — US-only audience (Texas/regional), consistent with the Mixpanel setup
+
+### Events tracked
+
+| Standard event | Trigger |
+|---|---|
+| `PageView` | Automatic on every page load (base pixel code) |
+| `Contact` | Visitor clicks a phone link (`.agent-phone`) or email link (`.agent-email`) |
+| `Lead` | Visitor clicks "Schedule a Private Showing" nav CTA (`.nav-cta`) |
+
+### Adding new events
+
+1. Use Meta standard event names where one fits (see [Meta's standard events reference](https://developers.facebook.com/docs/meta-pixel/reference)); fall back to a custom event name only if no standard event applies
+2. Add the `fbq('track', ...)` call inside the same click listener as the corresponding Mixpanel `mixpanel.track(...)` call in `views/index.erb`
+3. Verify new events with the Facebook Pixel Helper browser extension and Meta Events Manager's Test Events tool before considering implementation complete
+
